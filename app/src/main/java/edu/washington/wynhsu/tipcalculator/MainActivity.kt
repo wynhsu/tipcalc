@@ -18,6 +18,7 @@ class MainActivity : AppCompatActivity() {
         val tip = findViewById<Button>(R.id.btnTip)
         val value = findViewById<EditText>(R.id.txtAmount)
 
+        tip.isEnabled = false
         value.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable) {
                 value.removeTextChangedListener(this)
@@ -26,7 +27,7 @@ class MainActivity : AppCompatActivity() {
                     value.setText(concat)
                     value.setSelection(value.text.length)
                 }
-                tip.isClickable = value.text.toString().isNotEmpty()
+                tip.isEnabled = value.text.toString().isNotEmpty()
                 value.addTextChangedListener(this)
             }
             override fun beforeTextChanged(s: CharSequence, start: Int,
