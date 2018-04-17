@@ -5,7 +5,6 @@ import android.os.Bundle
 import android.widget.Button
 import android.widget.EditText
 import android.text.Editable
-import android.text.Selection
 import android.text.TextWatcher
 import android.widget.Toast
 
@@ -21,25 +20,21 @@ class MainActivity : AppCompatActivity() {
 
         value.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                if (!s.toString().startsWith("$")) {
-                    value.setText("$")
-                    Selection.setSelection(value.getText(), value.getText().toString().length)
+                value.removeTextChangedListener(this)
+                if (s.toString().isNotEmpty() && !s.toString().startsWith("$")) {
+                    val concat = "$" + s.toString()
+                    value.setText(concat)
+                    value.setSelection(value.text.length)
                 }
-
-                if (value.getText().toString().isEmpty()) {
-                    tip.isClickable = false
-                }
+                tip.isClickable = value.text.toString().isNotEmpty()
+                value.addTextChangedListener(this)
             }
-
             override fun beforeTextChanged(s: CharSequence, start: Int,
                                            count: Int, after: Int) {
-                value.setText("$")
-                Selection.setSelection(value.getText(), value.getText().toString().length)
             }
 
             override fun onTextChanged(s: CharSequence, start: Int,
                                        before: Int, count: Int) {
-                tip.isClickable = true
             }
         })
     }
@@ -50,15 +45,22 @@ class MainActivity : AppCompatActivity() {
         val value = findViewById<EditText>(R.id.txtAmount)
 
         tip.setOnClickListener {
-            val dub = value.getText().toString().toDouble() * .15
-            val str = "%.2f".format(dub)
+            var curr = value.text.toString()
+            if (!curr.contains('.')) {
+                curr += ".00"
+            }
+            value.setText(curr)
+            value.setSelection(value.text.length)
+
+            val sub = value.text.substring(1, value.text.length)
+            val dub = sub.toDouble()
+            val taxed = dub * .15
+            val str = "%.2f".format(taxed)
+            val strTax = "%.2f".format(dub)
+            value.setText(strTax)
             val result = Toast.LENGTH_SHORT
             val toast = Toast.makeText(applicationContext, str, result)
             toast.show()
         }
-
-//        value.setOnFocusChangeListener {
-//
-//        }
     }
 }
