@@ -7,6 +7,7 @@ import android.widget.EditText
 import android.text.Editable
 import android.text.Selection
 import android.text.TextWatcher
+import android.widget.Toast
 
 
 class MainActivity : AppCompatActivity() {
@@ -15,23 +16,30 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        val tip = findViewById<Button>(R.id.btnTip)
         val value = findViewById<EditText>(R.id.txtAmount)
-        value.setText("$")
-//        Selection.setSelection(value.getText(), value.getText().length())
 
         value.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable) {
+                if (!s.toString().startsWith("$")) {
+                    value.setText("$")
+                    Selection.setSelection(value.getText(), value.getText().toString().length)
+                }
 
+                if (value.getText().toString().isEmpty()) {
+                    tip.isClickable = false
+                }
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int,
                                            count: Int, after: Int) {
+                value.setText("$")
+                Selection.setSelection(value.getText(), value.getText().toString().length)
             }
 
             override fun onTextChanged(s: CharSequence, start: Int,
                                        before: Int, count: Int) {
-                val tip = findViewById<Button>(R.id.btnTip)
-                tip.setClickable(true)
+                tip.isClickable = true
             }
         })
     }
@@ -39,8 +47,18 @@ class MainActivity : AppCompatActivity() {
     override fun onResume() {
         super.onResume()
         val tip = findViewById<Button>(R.id.btnTip)
-        tip.setOnClickListener {
+        val value = findViewById<EditText>(R.id.txtAmount)
 
+        tip.setOnClickListener {
+            val dub = value.getText().toString().toDouble() * .15
+            val str = "%.2f".format(dub)
+            val result = Toast.LENGTH_SHORT
+            val toast = Toast.makeText(applicationContext, str, result)
+            toast.show()
         }
+
+//        value.setOnFocusChangeListener {
+//
+//        }
     }
 }

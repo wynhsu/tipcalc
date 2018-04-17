@@ -34,7 +34,7 @@
         android:ems="10"
         android:hint="Amount"
         android:inputType="numberDecimal"
-        android:textColor="#9E9E9E"
+        android:textColor="#000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
